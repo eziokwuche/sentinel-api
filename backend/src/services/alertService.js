@@ -38,12 +38,25 @@ const buildAlertMessage = (endpoint, check, alertType) => {
   return `${endpoint.name} has RECOVERED and is UP again. URL: ${endpoint.url}. Latest response time: ${check.response_time_ms}ms.`;
 };
 
+const getAlertRecipient = (endpoint) => {
+  const override = process.env.ALERT_TO_EMAIL?.trim();
+  if (override) {
+    return override;
+  }
+  return endpoint.alert_email?.trim() || null;
+};
+
 const sendAlert = async (endpoint, check, alertType) => {
   const message = buildAlertMessage(endpoint, check, alertType);
   await dbService.saveAlert(endpoint.id, alertType, message);
 
-  if (!endpoint.alert_email) {
-    return { sent: false, reason: "No alert_email configured", message };
+  const to = getAlertRecipient(endpoint);
+  if (!to) {
+    return {
+      sent: false,
+      reason: "No alert recipient (set ALERT_TO_EMAIL or endpoint alert_email)",
+      message,
+    };
   }
 
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
@@ -52,7 +65,7 @@ const sendAlert = async (endpoint, check, alertType) => {
 
   await transporter.sendMail({
     from: process.env.GMAIL_USER,
-    to: endpoint.alert_email,
+    to,
     subject: buildAlertSubject(alertType, endpoint.name),
     text: message,
   });

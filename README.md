@@ -208,8 +208,9 @@ All JSON bodies use `Content-Type: application/json` unless noted.
 | --- | --- | --- |
 | `DATABASE_URL` | Yes | PostgreSQL connection string (Neon). |
 | `PORT` | No | Server port (default `3000`). |
-| `GMAIL_USER` | For email | Gmail address used to send alerts. |
+| `GMAIL_USER` | For email | Gmail address used to **send** mail (SMTP login). |
 | `GMAIL_APP_PASSWORD` | For email | Gmail app password (not your normal login password). |
+| `ALERT_TO_EMAIL` | No | If set, all alert emails are delivered **to** this address (overrides per-endpoint `alert_email`). Use this to avoid using your personal inbox as the recipient. |
 | `ALERT_COOLDOWN_MINUTES` | No | Reserved for alert throttling / future use (e.g. `30`). |
 
 Never commit real `.env` files. Use `.gitignore` and secrets only in Render/hosting dashboards.
