@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import api from "../services/api";
 import EndpointCard from "./EndpointCard";
 
-export default function Dashboard({ refreshKey = 0 }) {
+export default function Dashboard({ refreshKey = 0, onEndpointsChanged }) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,6 +18,11 @@ export default function Dashboard({ refreshKey = 0 }) {
       setLoading(false);
     }
   }, []);
+
+  const handleEndpointDeleted = useCallback(async () => {
+    await loadDashboard();
+    onEndpointsChanged?.();
+  }, [loadDashboard, onEndpointsChanged]);
 
   useEffect(() => {
     loadDashboard();
@@ -44,7 +49,7 @@ export default function Dashboard({ refreshKey = 0 }) {
       ) : (
         <div className="endpoint-grid">
           {rows.map((row) => (
-            <EndpointCard key={row.id} endpoint={row} />
+            <EndpointCard key={row.id} endpoint={row} onDeleted={handleEndpointDeleted} />
           ))}
         </div>
       )}

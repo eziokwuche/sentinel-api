@@ -27,7 +27,7 @@ export default function App() {
       </header>
 
       <AddEndpointForm onSuccess={handleEndpointAdded} />
-      <Dashboard refreshKey={dashboardRefreshKey} />
+      <Dashboard refreshKey={dashboardRefreshKey} onEndpointsChanged={refetch} />
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import { useState } from "react";
+import api from "../services/api";
 import ResponseTimeChart from "./ResponseTimeChart";
 import StatusBadge from "./StatusBadge";
 
@@ -18,7 +20,7 @@ function formatLastChecked(iso) {
   return d.toLocaleString();
 }
 
-export default function EndpointCard({ endpoint }) {
+export default function EndpointCard({ endpoint, onDeleted }) {
   const {
     id,
     name,
@@ -29,11 +31,41 @@ export default function EndpointCard({ endpoint }) {
     last_checked_at: lastCheckedAt,
   } = endpoint;
 
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
+
+  const handleDelete = async () => {
+    const ok = window.confirm(`Remove “${name}” from monitoring? This cannot be undone.`);
+    if (!ok) return;
+
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await api.delete(`/api/endpoints/${id}`);
+      onDeleted?.();
+    } catch (err) {
+      setDeleteError(err.response?.data?.error || err.message || "Failed to delete");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <article className="endpoint-card">
       <header className="endpoint-card-header">
         <h3 className="endpoint-name">{name}</h3>
-        <StatusBadge status={currentStatus} />
+        <div className="endpoint-card-actions">
+          <StatusBadge status={currentStatus} />
+          <button
+            type="button"
+            className="endpoint-delete"
+            onClick={handleDelete}
+            disabled={deleting}
+            title="Stop monitoring this endpoint"
+          >
+            {deleting ? "Removing…" : "Delete"}
+          </button>
+        </div>
       </header>
       <p className="endpoint-url">{url}</p>
       <dl className="endpoint-meta">
@@ -50,6 +82,7 @@ export default function EndpointCard({ endpoint }) {
           <dd>{formatLastChecked(lastCheckedAt)}</dd>
         </div>
       </dl>
+      {deleteError && <p className="endpoint-delete-error">{deleteError}</p>}
       <ResponseTimeChart endpointId={id} />
     </article>
   );
