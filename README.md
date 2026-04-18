@@ -19,14 +19,13 @@ Health check: `GET https://sentinel-api-5cf7.onrender.com/api/health`
 
 ## Screenshots
 
-> _Add screenshots here after deployment._
+### Dashboard
 
-| Area | Placeholder |
-| --- | --- |
-| Dashboard | `![Dashboard](./docs/screenshots/dashboard.png)` |
-| Add endpoint form | `![Add endpoint](./docs/screenshots/add-endpoint.png)` |
+![Dashboard](docs/screenshots/dashboard.png)
 
-_Create a `docs/screenshots/` folder, drop images in, and uncomment or replace the markdown image links above._
+### Add endpoint
+
+![Add endpoint form](docs/screenshots/add-endpoint.png)
 
 ---
 
