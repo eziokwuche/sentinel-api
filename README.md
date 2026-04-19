@@ -232,4 +232,4 @@ Never commit real `.env` files. Use `.gitignore` and secrets only in Render/host
 
 ## License / author
 
-Portfolio project by **Andrew Nnani**. Use and learn from the code; attribution is appreciated if you fork or showcase it.
+Portfolio project by **Uche Nnani**. Use and learn from the code; attribution is appreciated if you fork or showcase it.
